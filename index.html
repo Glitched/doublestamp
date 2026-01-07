@@ -35,6 +35,8 @@
       --border-color: #2a2a3a;
       --gradient-green: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
       --gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #0f0f18 100%);
+      --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+      --glow-green-strong: 0 0 30px rgba(0, 255, 136, 0.4), 0 0 60px rgba(0, 255, 136, 0.2);
     }
 
     * {
@@ -119,6 +121,7 @@
       font-weight: 700;
       color: var(--accent-green);
       font-family: 'Space Mono', monospace;
+      box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
     }
 
     .nav-links {
@@ -159,7 +162,8 @@
 
     .btn-primary:hover {
       background: var(--accent-green);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-green-strong);
     }
 
     .btn-nav {
@@ -173,6 +177,7 @@
     .btn-nav:hover {
       background: var(--accent-green);
       color: var(--bg-dark);
+      box-shadow: var(--glow-green);
     }
 
     .btn-secondary {
@@ -249,12 +254,13 @@
       height: 8px;
       background: var(--accent-green);
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: pulse-glow 2s infinite;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(0, 255, 136, 0.6); }
+      50% { opacity: 0.7; box-shadow: 0 0 15px rgba(0, 255, 136, 0.8); }
     }
 
     .hero h1 {
@@ -272,6 +278,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.5));
     }
 
     .hero-subtitle {
@@ -308,9 +315,10 @@
       gap: 16px;
       padding: 20px 32px;
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      border: 1px solid rgba(0, 255, 136, 0.2);
       border-radius: 16px;
       animation: fadeInUp 0.6s ease 0.4s both;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
     }
 
     @media (max-width: 480px) {
@@ -334,6 +342,7 @@
       font-size: 2rem;
       font-weight: 700;
       color: var(--accent-green);
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
     }
 
     .counter-suffix {
@@ -362,20 +371,27 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       font-size: 0.9rem;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .trust-badge:hover {
+      border-color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.03);
     }
 
     .trust-badge-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     /* Stats Section */
@@ -523,6 +539,12 @@
       border-radius: 20px;
       padding: 48px;
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .case-study-card:hover {
+      border-color: rgba(0, 255, 136, 0.2);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
     .case-study-label {
@@ -610,11 +632,14 @@
 
     .pricing-card:hover {
       transform: translateY(-8px);
+      border-color: rgba(0, 255, 136, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 255, 136, 0.1);
     }
 
     .pricing-card.featured {
       border-color: var(--accent-green);
       background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, var(--bg-card) 50%);
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.15);
     }
 
     .pricing-card.featured::before {
@@ -907,6 +932,60 @@
       flex-wrap: wrap;
     }
 
+    @media (max-width: 600px) {
+      .bottleneck-card {
+        padding: 20px 16px;
+      }
+
+      .bottleneck-arrow {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .bottleneck-arrow-left {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .bottleneck-invention {
+        font-size: 1rem;
+      }
+
+      .bottleneck-speedup {
+        font-size: 0.9rem;
+        padding: 2px 8px;
+      }
+
+      .bottleneck-total {
+        width: 100%;
+        text-align: left;
+        margin-top: 4px;
+      }
+
+      .bottleneck-row-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 0;
+      }
+
+      .bottleneck-row-header .bottleneck-total {
+        width: auto;
+        margin-top: 0;
+      }
+
+      .bottleneck-legend {
+        gap: 12px 24px;
+      }
+
+      .legend-item {
+        font-size: 0.8rem;
+      }
+
+      .bottleneck-teaser {
+        font-size: 0.85rem;
+      }
+    }
+
     .legend-item {
       display: flex;
       align-items: center;
@@ -950,6 +1029,12 @@
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .api-card:hover {
+      border-color: rgba(0, 255, 136, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
     .api-endpoint {
@@ -1003,7 +1088,19 @@
     .api-response code {
       font-family: 'Space Mono', monospace;
       font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .api-response code .key {
+      color: var(--accent-blue);
+    }
+
+    .api-response code .value {
       color: var(--accent-green);
+    }
+
+    .api-response code .bool {
+      color: #ff9f43;
     }
 
     /* Announcement */
@@ -1083,6 +1180,7 @@
     footer {
       padding: 40px 0;
       border-top: 1px solid var(--border-color);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(0, 255, 136, 0.02) 100%);
     }
 
     footer .container {
@@ -1366,11 +1464,12 @@
     .game-btn-approve {
       background: var(--accent-green);
       color: #000;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
     }
 
     .game-btn-approve:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+      box-shadow: 0 4px 25px rgba(0, 255, 136, 0.5), 0 0 30px rgba(0, 255, 136, 0.3);
     }
 
     .game-btn-reject {
@@ -1841,11 +1940,11 @@
         <p class="api-desc">Gets a human to approve the thing.</p>
         <div class="api-response">
           <span class="api-response-label">Request</span>
-          <pre><code>{ "code": "..." }</code></pre>
+          <pre><code>{ <span class="key">"code"</span>: <span class="value">"..."</span> }</code></pre>
         </div>
         <div class="api-response" style="margin-top: 12px;">
           <span class="api-response-label">Response</span>
-          <pre><code>{ "approved": true }</code></pre>
+          <pre><code>{ <span class="key">"approved"</span>: <span class="bool">true</span> }</code></pre>
         </div>
       </div>
     </div>
@@ -1957,12 +2056,9 @@
   <footer>
     <div class="container">
       <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Compliance Docs</a>
         <a href="#" id="careers-link">Careers (We're Hiring Clickers!)</a>
       </div>
-      <p class="footer-copy">© 2025 Doublestamp, Inc. All rights reserved. Humans included.</p>
+      <a href="https://RyanSlama.com" class="footer-copy" style="text-decoration: none;">Made with ♥ by Ryan Slama</a>
     </div>
   </footer>
 
