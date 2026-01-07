@@ -301,6 +301,15 @@
       animation: fadeInUp 0.6s ease 0.4s both;
     }
 
+    @media (max-width: 480px) {
+      .live-counter {
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 24px;
+        text-align: center;
+      }
+    }
+
     .counter-label {
       font-size: 0.9rem;
       color: var(--text-secondary);
@@ -1130,6 +1139,42 @@
       transform: scale(1);
     }
 
+    @media (max-width: 480px) {
+      .modal {
+        padding: 24px 16px;
+      }
+
+      .game-area {
+        flex-direction: column;
+      }
+
+      .game-box {
+        width: 100%;
+        min-height: 120px;
+      }
+
+      .game-buttons {
+        flex-direction: row;
+        width: 100%;
+      }
+
+      .game-btn {
+        flex: 1;
+      }
+
+      .game-stats {
+        gap: 8px;
+      }
+
+      .game-score {
+        padding: 12px 8px;
+      }
+
+      .game-score-value {
+        font-size: 1.2rem;
+      }
+    }
+
     .modal-close {
       position: absolute;
       top: 16px;
@@ -1545,7 +1590,7 @@
         <p class="hero-subtitle">Human code review in&nbsp;under&nbsp;a&nbsp;second.<br>Ship at the speed of tokens. No nits. No&nbsp;follow-ups.</p>
         <div class="hero-ctas">
           <a href="#" class="btn btn-primary">Start Free Trial →</a>
-          <a href="#" class="btn btn-secondary" id="get-hired-btn">Get Hired</a>
+          <a href="#" class="btn btn-secondary" id="get-hired-btn">Instant Interview</a>
         </div>
         <div class="live-counter">
           <span class="counter-label">Reviews Completed Today</span>
@@ -1642,7 +1687,7 @@
             <li>Sub-1-second SLA guarantee</li>
             <li>Caffeinated reviewers on standby</li>
             <li>Official-looking audit paperwork</li>
-            <li>Sophisticated Multi-Agent Support via Email</li>
+            <li>Sophisticated Multi-Agent Support</li>
           </ul>
           <a href="#" class="btn btn-primary">Get Started</a>
         </div>
@@ -1834,6 +1879,7 @@
             </div>
           </div>
           <div class="game-result" id="game-result"></div>
+          <button class="btn btn-secondary" id="close-game-btn" style="margin-top: 16px;">Close</button>
         </div>
       </div>
 
@@ -2143,6 +2189,11 @@
     tryAgainBtn.addEventListener('click', () => {
       resetGame();
       startGame();
+    });
+
+    document.getElementById('close-game-btn').addEventListener('click', () => {
+      modal.classList.remove('active');
+      clearTimeout(timeoutId);
     });
 
     // Instant tooltips for bottleneck segments
