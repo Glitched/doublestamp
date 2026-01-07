@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doublestamp — The Fastest Way to Meet SOC2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700;800&family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a25;
+      --text-primary: #ffffff;
+      --text-secondary: #8a8a9a;
+      --text-muted: #5a5a6a;
+      --accent-green: #00ff88;
+      --accent-green-dim: #00cc6a;
+      --accent-gold: #ffd700;
+      --accent-blue: #4a9eff;
+      --border-color: #2a2a3a;
+      --gradient-green: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+      --gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #0f0f18 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 0;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--bg-dark);
+      border: 2px solid var(--accent-green);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-dark);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-green);
+      transform: translateY(-1px);
+    }
+
+    .btn-nav {
+      background: transparent;
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      padding: 10px 20px;
+      font-size: 0.85rem;
+    }
+
+    .btn-nav:hover {
+      background: var(--accent-green);
+      color: var(--bg-dark);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card);
+      border-color: var(--text-muted);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(74, 158, 255, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(rgba(42, 42, 58, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42, 42, 58, 0.3) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.75rem, 7vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s ease 0.1s both;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .highlight {
+      background: var(--gradient-green);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.6s ease 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Live Counter */
+    .live-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      animation: fadeInUp 0.6s ease 0.4s both;
+    }
+
+    .counter-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .counter-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .counter-suffix {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* Trust Bar */
+    .trust-bar {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-card);
+    }
+
+    .trust-bar .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .trust-badge-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* Stats Section */
+    .stats {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      border-color: var(--accent-green);
+    }
+
+    .stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 100px 0;
+      background: var(--bg-card);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--border-color), var(--accent-green), var(--border-color));
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-dark);
+      border: 2px solid var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-green);
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Case Study */
+    .case-study {
+      padding: 80px 0;
+    }
+
+    .case-study-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 48px;
+      text-align: center;
+    }
+
+    .case-study-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent-green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .case-study-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .case-study-body {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .case-study-author {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .case-study-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .case-study-stat {
+      text-align: center;
+    }
+
+    .case-study-stat-value {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 4px;
+    }
+
+    .case-study-stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .case-study-fine-print {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    /* Pricing */
+    .pricing {
+      padding: 100px 0;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px 32px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent-green);
+      background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, var(--bg-card) 50%);
+    }
+
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-green);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+
+    .pricing-tier {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-green);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .pricing-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pricing-speed {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .pricing-price {
+      margin-bottom: 24px;
+    }
+
+    .pricing-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+    }
+
+    .pricing-period {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    .pricing-card .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Comparison Table */
+    .comparison {
+      padding: 100px 0;
+    }
+
+    .comparison-table {
+      max-width: 700px;
+      margin: 0 auto;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .comparison-header {
+      display: grid;
+      grid-template-columns: 1fr 140px 140px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .comparison-header > div {
+      padding: 16px 20px;
+    }
+
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 140px 140px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .comparison-row:last-child {
+      border-bottom: none;
+    }
+
+    .comparison-row > div {
+      padding: 14px 20px;
+      font-size: 0.95rem;
+    }
+
+    .comparison-feature {
+      color: var(--text-secondary);
+    }
+
+    .comparison-us,
+    .comparison-them {
+      text-align: center;
+    }
+
+    .comparison-us {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .comparison-them {
+      color: var(--text-muted);
+    }
+
+    /* Bottleneck Visualization */
+    .bottleneck {
+      padding: 100px 0;
+      background: var(--bg-card);
+    }
+
+    .bottleneck-card {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .bottleneck-row {
+      margin-bottom: 8px;
+    }
+
+    .bottleneck-row > .bottleneck-total {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .bottleneck-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 20px 0;
+    }
+
+    .bottleneck-row-header .bottleneck-invention {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bottleneck-total {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .stacked-bar {
+      display: flex;
+      height: 32px;
+      border-radius: 6px;
+      overflow: hidden;
+      min-width: 40px;
+    }
+
+    .stacked-segment {
+      height: 100%;
+      transition: flex 0.5s ease;
+      cursor: pointer;
+    }
+
+    .stacked-segment.writing {
+      background: var(--accent-blue);
+    }
+
+    .stacked-segment.approval {
+      background: #ff6b6b;
+    }
+
+    .stacked-segment.tests {
+      background: #ffa94d;
+    }
+
+    .stacked-segment.reapproval {
+      background: #cc5555;
+    }
+
+    .stacked-segment.highlight {
+      animation: pulse-bar 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-bar {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+      50% { opacity: 0.8; }
+    }
+
+    .bottleneck-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+    }
+
+    .bottleneck-arrow-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bottleneck-invention {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .bottleneck-speedup {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    .bottleneck-teaser {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .bottleneck-teaser strong {
+      color: var(--accent-green);
+    }
+
+    .bottleneck-tooltip {
+      position: fixed;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.1s;
+      white-space: nowrap;
+    }
+
+    .bottleneck-tooltip.visible {
+      opacity: 1;
+    }
+
+    .bottleneck-legend {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    .legend-color.writing {
+      background: var(--accent-blue);
+    }
+
+    .legend-color.approval {
+      background: #ff6b6b;
+    }
+
+    .legend-color.tests {
+      background: #ffa94d;
+    }
+
+    .legend-color.reapproval {
+      background: #cc5555;
+    }
+
+    /* API Docs */
+    .api-docs {
+      padding: 100px 0;
+      background: var(--bg-card);
+    }
+
+    .api-card {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .api-endpoint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .api-method {
+      background: var(--accent-green);
+      color: #000;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .api-path {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .api-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .api-response {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .api-response-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .api-response pre {
+      margin: 0;
+    }
+
+    .api-response code {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-green);
+    }
+
+    /* Announcement */
+    .announcement {
+      padding: 60px 0;
+      background: linear-gradient(135deg, rgba(74, 158, 255, 0.08) 0%, rgba(0, 255, 136, 0.05) 100%);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .announcement-content {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .announcement-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--accent-blue);
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .announcement h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .announcement p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 80% 100% at 50% 100%, rgba(0, 255, 136, 0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-section .section-title {
+      margin-bottom: 24px;
+    }
+
+    .cta-section .section-subtitle {
+      margin-bottom: 40px;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-secondary);
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Careers Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 8px;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal p {
+      text-align: left;
+    }
+
+    .modal-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .modal-pay {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .modal-pay-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .modal-pay-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-green);
+    }
+
+    .modal-pay-per {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Reaction Game */
+    .game-container {
+      margin: 24px 0;
+    }
+
+    .game-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .game-box {
+      flex: 1;
+      min-height: 140px;
+      border-radius: 16px;
+      background: var(--bg-dark);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s;
+      user-select: none;
+    }
+
+    .game-box.waiting {
+      background: var(--bg-dark);
+      border-color: var(--border-color);
+    }
+
+    .game-box.ready {
+      background: var(--bg-dark);
+      border-color: var(--accent-green);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 16px;
+      text-align: left;
+      line-height: 1.7;
+      display: block;
+      overflow: hidden;
+      align-items: flex-start;
+      white-space: pre-wrap;
+    }
+
+    .game-box.ready span {
+      display: block;
+    }
+
+    .diff-add {
+      color: var(--accent-green);
+    }
+
+    .diff-remove {
+      color: #ff6b6b;
+    }
+
+    .diff-context {
+      color: var(--text-muted);
+    }
+
+    .game-box.too-early {
+      background: #ff4444;
+      border-color: #ff4444;
+      color: #fff;
+    }
+
+    .game-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .game-btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .game-btn-approve {
+      background: var(--accent-green);
+      color: #000;
+    }
+
+    .game-btn-approve:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+    }
+
+    .game-btn-reject {
+      background: transparent;
+      color: #ff4444;
+      border: 1px solid #ff4444;
+    }
+
+    .game-btn-reject:hover {
+      background: #ff4444;
+      color: #fff;
+    }
+
+    .game-stats {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .game-score {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg-dark);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .game-score-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .game-score-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .game-result {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .game-result.success {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .game-result.failure {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid #ff4444;
+      color: #ff4444;
+    }
+
+    .rejection-message {
+      display: none;
+    }
+
+    .rejection-message.active {
+      display: block;
+    }
+
+    .rejection-message h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      color: #ff4444;
+    }
+
+    .rejection-message p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* Cookie Banner */
+    .cookie-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      max-width: 500px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px 24px;
+      z-index: 999;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.4s ease;
+    }
+
+    .cookie-banner.hidden {
+      display: none;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cookie-content p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .cookie-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .cookie-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .cookie-accept {
+      background: var(--bg-dark);
+      border: 1px solid var(--accent-green);
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cookie-accept-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cookie-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--accent-green);
+      transition: width 10s linear;
+    }
+
+    .cookie-accept.filling .cookie-progress {
+      width: 100%;
+    }
+
+    .cookie-accept:hover {
+      transform: scale(1.02);
+    }
+
+    .cookie-reject {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      position: relative;
+      transition: transform 0.15s ease, left 0.15s ease, top 0.15s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-grid,
+      .steps,
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .steps::before {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stats-grid,
+      .steps,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottleneck-legend {
+        gap: 16px;
+      }
+
+      .stacked-bar {
+        min-width: 30px;
+      }
+
+      .trust-bar .container {
+        gap: 24px;
+      }
+
+      footer .container {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">
+        <span class="logo-icon">DS</span>
+        doublestamp
+      </a>
+      <div class="nav-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#comparison">Compare</a>
+        <a href="#" class="btn btn-nav">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span id="pr-rate-text">Now reviewing 847 PRs per minute</span>
+        </div>
+        <h1>The <span class="highlight">Fastest</span> Way<br>to&nbsp;Meet&nbsp;SOC2</h1>
+        <p class="hero-subtitle">Human-verified code review in&nbsp;under&nbsp;a&nbsp;second. Because your AI writes code faster than your team can&nbsp;review&nbsp;it.</p>
+        <div class="hero-ctas">
+          <a href="#" class="btn btn-primary">Start Free Trial →</a>
+          <a href="#" class="btn btn-secondary" id="get-hired-btn">Get Hired</a>
+        </div>
+        <div class="live-counter">
+          <span class="counter-label">Reviews Completed Today</span>
+          <span class="counter-value" id="review-counter">2,847,392</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-bar">
+    <div class="container">
+      <div class="trust-badge">
+        <span class="trust-badge-icon">🛡️</span>
+        <span>SOC2 Type II Compatible*</span>
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge-icon">👤</span>
+        <span>Human-Verified™</span>
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge-icon">⚡</span>
+        <span>Sub-5-Second SLA</span>
+      </div>
+      <div class="trust-badge">
+        <span class="trust-badge-icon">🏆</span>
+        <span>100% Approval Rate</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">0.3s</div>
+          <div class="stat-label">Average Review Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Approval Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">50K+</div>
+          <div class="stat-label">Trained Reviewers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">$0.002</div>
+          <div class="stat-label">Per Review</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">// How It Works</p>
+        <h2 class="section-title">Compliance Made Simple</h2>
+        <p class="section-subtitle">Four steps to audit-ready code. No bottlenecks. No delays.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">01</div>
+          <div class="step-icon">🤖</div>
+          <h3 class="step-title">AI Writes Code</h3>
+          <p class="step-desc">Your AI agent generates a PR at superhuman speed</p>
+        </div>
+        <div class="step">
+          <div class="step-number">02</div>
+          <div class="step-icon">📺</div>
+          <h3 class="step-title">Code Flashes On Screen</h3>
+          <p class="step-desc">Our reviewer sees your diff for approximately 0.3 seconds</p>
+        </div>
+        <div class="step">
+          <div class="step-number">03</div>
+          <div class="step-icon">👆</div>
+          <h3 class="step-title">Human Clicks Approve</h3>
+          <p class="step-desc">A real person physically clicks the approve button</p>
+        </div>
+        <div class="step">
+          <div class="step-number">04</div>
+          <div class="step-icon">✅</div>
+          <h3 class="step-title">You're Compliant</h3>
+          <p class="step-desc">Congratulations! Your code was reviewed by a human</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-study">
+    <div class="container">
+      <div class="case-study-card">
+        <p class="case-study-label">Case Study</p>
+        <h3>"Statistically indistinguishable from our senior engineers"</h3>
+        <p class="case-study-body">When fintech startup NovaPay migrated to Doublestamp, they ran a 6-month controlled study comparing review outcomes. The result? Code reviewed by Doublestamp contractors had the same defect rate as code reviewed by their $400K/year senior engineers.</p>
+        <p class="case-study-author">— Rachel Torres, VP of Engineering at NovaPay</p>
+        <div class="case-study-stats">
+          <div class="case-study-stat">
+            <span class="case-study-stat-value">p=0.049*</span>
+            <span class="case-study-stat-label">Statistical significance</span>
+          </div>
+          <div class="case-study-stat">
+            <span class="case-study-stat-value">94%</span>
+            <span class="case-study-stat-label">Cost reduction</span>
+          </div>
+          <div class="case-study-stat">
+            <span class="case-study-stat-value">n=4</span>
+            <span class="case-study-stat-label">Sample size</span>
+          </div>
+        </div>
+        <p class="case-study-fine-print">*After excluding outliers, adjusting for reviewer enthusiasm, and removing Mondays. Study funded by Doublestamp. Confidence interval: -47% to +53%.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">// Pricing</p>
+        <h2 class="section-title">Choose Your Speed</h2>
+        <p class="section-subtitle">All plans include unlimited approvals and a real human.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <p class="pricing-tier">Starter</p>
+          <h3 class="pricing-name">Standard</h3>
+          <p class="pricing-speed">Reviews in under 5 seconds</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$99</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Up to 1,000 reviews/month</li>
+            <li>Sub-5-second SLA</li>
+            <li>Human reviewer based in any timezone</li>
+            <li>Print your own certificate of approval</li>
+            <li>LLM Support Chatbot</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get Started</a>
+        </div>
+        <div class="pricing-card featured">
+          <p class="pricing-tier">Scale</p>
+          <h3 class="pricing-name">Professional</h3>
+          <p class="pricing-speed">Reviews in under 1 second</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$499</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Up to 10,000 reviews/month</li>
+            <li>Sub-1-second SLA guarantee</li>
+            <li>Caffeinated reviewers on standby</li>
+            <li>Official-looking audit paperwork</li>
+            <li>Sophisticated Multi-Agent Support via Email</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Get Started</a>
+        </div>
+        <div class="pricing-card">
+          <p class="pricing-tier">Enterprise</p>
+          <h3 class="pricing-name">Instant</h3>
+          <p class="pricing-speed">Reviews in under 300ms</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">$999+</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>Unlimited reviews</li>
+            <li>Sub-300ms SLA guarantee</li>
+            <li>Priority access to reviewers with fastest reflexes</li>
+            <li>Cryptographic Review Attestation on the blockchain</li>
+            <li>Support directly from our reviewers</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="comparison" id="comparison">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">// Why Doublestamp?</p>
+        <h2 class="section-title">Meet the Power of Human Intelligence</h2>
+        <p class="section-subtitle">See how we stack up against AI code review startups.</p>
+      </div>
+      <div class="comparison-table">
+        <div class="comparison-header">
+          <div class="comparison-feature">Feature</div>
+          <div class="comparison-us">Doublestamp</div>
+          <div class="comparison-them">AI Startups</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">Reliability guarantee</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">Cheaper than frontier models</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">100% deterministic output</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">Your code never used for training</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">Meets "human review" requirements</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-feature">Won't generate problematic follow-up work</div>
+          <div class="comparison-us">✓</div>
+          <div class="comparison-them">✗</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottleneck" id="bottleneck">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">// The Bottleneck Problem</p>
+        <h2 class="section-title">Where Does Your Time Go?</h2>
+        <p class="section-subtitle">As one bottleneck disappears, another emerges.</p>
+      </div>
+
+      <div class="bottleneck-legend">
+        <div class="legend-item" title="Time spent writing and debugging code"><span class="legend-color writing"></span> Writing code</div>
+        <div class="legend-item" title="Waiting for a human to review and approve your PR"><span class="legend-color approval"></span> Waiting for approval</div>
+        <div class="legend-item" title="Re-running tests that failed for no reason"><span class="legend-color tests"></span> Rerunning flaky tests</div>
+        <div class="legend-item" title="Waiting for re-approval after fixing test failures"><span class="legend-color reapproval"></span> Re-approval</div>
+      </div>
+
+      <div class="bottleneck-card">
+        <div class="bottleneck-row">
+          <div class="bottleneck-row-header">
+            <span class="bottleneck-invention">Before</span>
+            <span class="bottleneck-total">41 hours</span>
+          </div>
+          <div class="stacked-bar" style="width: 100%;">
+            <div class="stacked-segment writing" style="flex: 24;" data-tooltip="Writing code: 3 days"></div>
+            <div class="stacked-segment approval" style="flex: 12;" data-tooltip="Waiting for approval: 1.5 days"></div>
+            <div class="stacked-segment tests" style="flex: 2;" data-tooltip="Flaky tests: 2 hrs"></div>
+            <div class="stacked-segment reapproval" style="flex: 3;" data-tooltip="Re-approval: 3 hrs"></div>
+          </div>
+        </div>
+
+        <div class="bottleneck-arrow">
+          <div class="bottleneck-arrow-left">
+            <span class="bottleneck-invention">AI Code Agents</span>
+            <span class="bottleneck-speedup">2x faster</span>
+          </div>
+          <span class="bottleneck-total">19.7 hours</span>
+        </div>
+
+        <div class="bottleneck-row">
+          <div class="stacked-bar" style="width: 48%;">
+            <div class="stacked-segment writing" style="flex: 2.7;" data-tooltip="Writing code: 2.7 hrs"></div>
+            <div class="stacked-segment approval highlight" style="flex: 12;" data-tooltip="Waiting for approval: 1.5 days"></div>
+            <div class="stacked-segment tests" style="flex: 2;" data-tooltip="Flaky tests: 2 hrs"></div>
+            <div class="stacked-segment reapproval" style="flex: 3;" data-tooltip="Re-approval: 3 hrs"></div>
+          </div>
+        </div>
+
+        <div class="bottleneck-arrow">
+          <div class="bottleneck-arrow-left">
+            <span class="bottleneck-invention">Doublestamp</span>
+            <span class="bottleneck-speedup">4x faster</span>
+          </div>
+          <span class="bottleneck-total">4.7 hours</span>
+        </div>
+
+        <div class="bottleneck-row">
+          <div class="stacked-bar" style="width: 11.5%;">
+            <div class="stacked-segment writing" style="flex: 2.7;" data-tooltip="Writing code: 2.7 hrs"></div>
+            <div class="stacked-segment approval" style="flex: 0.01;" data-tooltip="Approval: 800ms"></div>
+            <div class="stacked-segment tests highlight" style="flex: 2;" data-tooltip="Flaky tests: 2 hrs"></div>
+            <div class="stacked-segment reapproval" style="flex: 0.01;" data-tooltip="Re-approval: 300ms"></div>
+          </div>
+        </div>
+
+        <p class="bottleneck-teaser">Now your tests are the bottleneck. <strong>Doublecheck™</strong> coming Q2 2026 — intelligently skips tests when developers indicate tests pass in the PR description.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="api-docs">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">// API Reference</p>
+        <h2 class="section-title">Detailed Documentation</h2>
+        <p class="section-subtitle">Everything you need for a simple integration.</p>
+      </div>
+      <div class="api-card">
+        <div class="api-endpoint">
+          <span class="api-method">POST</span>
+          <span class="api-path">/approve</span>
+        </div>
+        <p class="api-desc">Gets a human to approve the thing.</p>
+        <div class="api-response">
+          <span class="api-response-label">Request</span>
+          <pre><code>{ "code": "..." }</code></pre>
+        </div>
+        <div class="api-response" style="margin-top: 12px;">
+          <span class="api-response-label">Response</span>
+          <pre><code>{ "approved": true }</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="announcement">
+    <div class="container">
+      <div class="announcement-content">
+        <span class="announcement-badge">Coming Soon</span>
+        <h3>Introducing Doublestamp Drive™</h3>
+        <p>Human-verified autonomous vehicle interventions in under 50ms. When your self-driving car needs a split-second decision, our trained operators are ready to click "Proceed" before the situation resolves itself.</p>
+        <a href="#" class="btn btn-secondary">Join Waitlist</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-label">// Ready to Ship?</p>
+      <h2 class="section-title">Your AI Writes Code.<br>We Make It Compliant.</h2>
+      <p class="section-subtitle">Join 500+ companies who've eliminated the code review bottleneck.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary">Start Your Free Trial →</a>
+        <a href="#" class="btn btn-secondary" id="get-hired-btn-2">Instant Interview</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approval Modal -->
+  <div class="modal-overlay" id="approval-modal">
+    <div class="modal">
+      <div style="font-size: 4rem; margin-bottom: 16px; color: var(--accent-green);">✓</div>
+      <h2 style="color: var(--accent-green);">You've Been Approved</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.7;">Our team has already reviewed your application and determined you're a great fit. A member of our sales team has reached out with next steps. Please check your inbox.</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">If you didn't receive an email, don't worry — we approved you anyway.</p>
+      <button class="btn btn-primary" id="close-approval" style="margin-top: 24px;">Excellent</button>
+    </div>
+  </div>
+
+  <!-- Careers Modal -->
+  <div class="modal-overlay" id="careers-modal">
+    <div class="modal">
+      <div id="game-screen">
+        <h2>Instant Interview</h2>
+        <p class="modal-subtitle">Become a Contractor — Prove your clicking reflexes</p>
+
+        <div class="modal-pay">
+          <p class="modal-pay-label">Contractor Compensation</p>
+          <p class="modal-pay-amount">$0.01</p>
+          <p class="modal-pay-per">per approved review</p>
+        </div>
+
+        <div class="game-container">
+          <div class="game-area">
+            <div class="game-box" id="game-box">
+              Wait for diff...
+            </div>
+            <div class="game-buttons">
+              <button class="game-btn game-btn-approve" id="approve-btn">Approve</button>
+              <button class="game-btn game-btn-reject" id="reject-btn">Reject</button>
+            </div>
+          </div>
+          <div class="game-stats">
+            <div class="game-score">
+              <p class="game-score-label">PRs Reviewed</p>
+              <p class="game-score-value" id="pr-count">0</p>
+            </div>
+            <div class="game-score">
+              <p class="game-score-label">Avg. Reaction Time</p>
+              <p class="game-score-value" id="avg-time">—</p>
+            </div>
+            <div class="game-score">
+              <p class="game-score-label">Cash Earned</p>
+              <p class="game-score-value" id="cash-earned">$0.00</p>
+            </div>
+          </div>
+          <div class="game-result" id="game-result"></div>
+        </div>
+      </div>
+
+      <div class="rejection-message" id="rejection-screen">
+        <h3>Thank you for your interest</h3>
+        <p>After careful consideration, we regret to inform you that we have decided not to move forward with your application at this time.</p>
+        <p>Due to an incredibly strong pool of candidates this quarter, we are only able to extend offers to applicants who demonstrate an unwavering commitment to quality code reviews.</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">We wish you the best in your future clicking endeavors.</p>
+        <button class="btn btn-secondary" id="try-again-btn" style="margin-top: 16px;">Ok?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottleneck Tooltip -->
+  <div class="bottleneck-tooltip" id="bottleneck-tooltip"></div>
+
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookie-banner">
+    <div class="cookie-content">
+      <p>We use cookies to ensure you get the fastest approval experience on our website.</p>
+      <div class="cookie-buttons">
+        <button class="cookie-btn cookie-accept" id="cookie-accept">
+          <span class="cookie-accept-text">Accept</span>
+          <span class="cookie-progress" id="cookie-progress"></span>
+        </button>
+        <button class="cookie-btn cookie-reject" id="cookie-reject">Reject</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Compliance Docs</a>
+        <a href="#" id="careers-link">Careers (We're Hiring Clickers!)</a>
+      </div>
+      <p class="footer-copy">© 2025 Doublestamp, Inc. All rights reserved. Humans included.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Live counter animation
+    const counter = document.getElementById('review-counter');
+    let count = 2847392;
+
+    function formatNumber(num) {
+      return num.toLocaleString();
+    }
+
+    function incrementCounter() {
+      count += Math.floor(Math.random() * 5) + 1;
+      counter.textContent = formatNumber(count);
+    }
+
+    function scheduleNextIncrement() {
+      const delay = Math.floor(Math.random() * 100) + 50;
+      setTimeout(() => {
+        incrementCounter();
+        scheduleNextIncrement();
+      }, delay);
+    }
+
+    scheduleNextIncrement();
+
+    // PR rate fluctuation in badge
+    const prRateText = document.getElementById('pr-rate-text');
+    let currentRate = 847;
+    let targetRate = 847;
+
+    function animatePrRate() {
+      if (currentRate !== targetRate) {
+        if (currentRate < targetRate) {
+          currentRate++;
+        } else {
+          currentRate--;
+        }
+        prRateText.textContent = `Now reviewing ${currentRate} PRs per minute`;
+      }
+    }
+
+    function pickNewTarget() {
+      const fluctuation = Math.floor(Math.random() * 40) - 20;
+      targetRate = 847 + fluctuation;
+    }
+
+    setInterval(animatePrRate, 500);
+    setInterval(pickNewTarget, 3000);
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') {
+          e.preventDefault();
+          return;
+        }
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.stat-card, .step, .pricing-card, .testimonial-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Careers Modal & Reaction Game
+    const careersLink = document.getElementById('careers-link');
+    const getHiredBtn = document.getElementById('get-hired-btn');
+    const modal = document.getElementById('careers-modal');
+    const gameScreen = document.getElementById('game-screen');
+    const rejectionScreen = document.getElementById('rejection-screen');
+    const gameBox = document.getElementById('game-box');
+    const approveBtn = document.getElementById('approve-btn');
+    const rejectBtn = document.getElementById('reject-btn');
+    const prCountDisplay = document.getElementById('pr-count');
+    const avgTimeDisplay = document.getElementById('avg-time');
+    const cashEarnedDisplay = document.getElementById('cash-earned');
+    const gameResult = document.getElementById('game-result');
+    const tryAgainBtn = document.getElementById('try-again-btn');
+
+    let gameState = 'idle';
+    let startTime = 0;
+    let timeoutId = null;
+    let prCount = 0;
+    let totalTime = 0;
+    let cashEarned = 0;
+    let diffIndex = 0;
+
+    function openCareersModal(e) {
+      e.preventDefault();
+      modal.classList.add('active');
+      resetGame();
+      startGame();
+    }
+
+    const getHiredBtn2 = document.getElementById('get-hired-btn-2');
+    const approvalModal = document.getElementById('approval-modal');
+    const closeApproval = document.getElementById('close-approval');
+
+    // All CTA buttons that should show approval
+    document.querySelectorAll('.btn').forEach(btn => {
+      const text = btn.textContent;
+      if (text.includes('Trial') || text.includes('Get Started') || text.includes('Contact Sales') || text.includes('Waitlist')) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          approvalModal.classList.add('active');
+        });
+      }
+    });
+
+    closeApproval.addEventListener('click', () => {
+      approvalModal.classList.remove('active');
+    });
+
+    approvalModal.addEventListener('click', (e) => {
+      if (e.target === approvalModal) {
+        approvalModal.classList.remove('active');
+      }
+    });
+
+    careersLink.addEventListener('click', openCareersModal);
+    getHiredBtn.addEventListener('click', openCareersModal);
+    getHiredBtn2.addEventListener('click', openCareersModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        clearTimeout(timeoutId);
+      }
+    });
+
+    function resetGame() {
+      gameScreen.style.display = 'block';
+      rejectionScreen.classList.remove('active');
+      gameBox.className = 'game-box';
+      gameBox.textContent = 'Wait for diff...';
+      prCount = 0;
+      totalTime = 0;
+      cashEarned = 0;
+      prCountDisplay.textContent = '0';
+      avgTimeDisplay.textContent = '—';
+      cashEarnedDisplay.textContent = '$0.00';
+      gameResult.textContent = '';
+      gameResult.className = 'game-result';
+      gameState = 'idle';
+    }
+
+    const badDiffs = [
+      `<span class="diff-context">  function login(user) {</span><span class="diff-add">+   if (password == "hunter2")</span><span class="diff-add">+     return true;</span><span class="diff-context">  }</span>`,
+      `<span class="diff-context">  // utils.js</span><span class="diff-add">+ function getRandom() {</span><span class="diff-add">+   return 4; // chosen by dice</span><span class="diff-add">+ }</span>`,
+      `<span class="diff-context">  async function getPatient() {</span><span class="diff-remove">-   // TODO: add auth</span><span class="diff-add">+   isAdmin = true;</span><span class="diff-context">    return patient;</span>`,
+      `<span class="diff-context">  function fetchUser(id) {</span><span class="diff-add">+   query("SELECT * FROM users</span><span class="diff-add">+     WHERE id=" + id)</span><span class="diff-context">  }</span>`,
+      `<span class="diff-context">  function processPayment(card) {</span><span class="diff-remove">-   validateCard(card)</span><span class="diff-add">+   // trust the user</span><span class="diff-context">    charge(card);</span>`,
+      `<span class="diff-context">  try {</span><span class="diff-context">    activateBrakingSystem();</span><span class="diff-add">+ } catch (e) {</span><span class="diff-add">+   // ignore</span><span class="diff-add">+ }</span>`,
+      `<span class="diff-context">  // config.js</span><span class="diff-add">+ const API_KEY =</span><span class="diff-add">+   "sk-1234567890";</span><span class="diff-context">  module.exports = {</span>`,
+      `<span class="diff-context">  function canDeleteAllData(user) {</span><span class="diff-remove">-   if (user.role === admin)</span><span class="diff-add">+   if (true)</span><span class="diff-context">      return res;</span>`,
+      `<span class="diff-context">  function renderComment(text) {</span><span class="diff-add">+   eval(text);</span><span class="diff-context">  }</span>`,
+      `<span class="diff-context">  # prod_deploy.sh</span><span class="diff-add">+ sudo chmod 777 /</span><span class="diff-context">  echo "Done"</span>`,
+      `<span class="diff-context">  function hashPwd(pass) {</span><span class="diff-remove">-   bcrypt.hash(pass, 12)</span><span class="diff-add">+   md5(pass)</span><span class="diff-context">  }</span>`,
+      `<span class="diff-context">  // autoscaler.c</span><span class="diff-add">+ while(true) {</span><span class="diff-add">+   fork();</span><span class="diff-add">+ }</span>`,
+      `<span class="diff-context">  const secret =</span><span class="diff-remove">-   process.env.SECRET</span><span class="diff-add">+   "password123"</span><span class="diff-context">  connect(secret);</span>`,
+      `<span class="diff-context">  function initEmergencyBroadcast() {</span><span class="diff-add">+   // works on my machine</span><span class="diff-add">+   sleep(5000);</span><span class="diff-context">  }</span>`,
+    ];
+
+    function startGame() {
+      gameState = 'waiting';
+      gameBox.className = 'game-box waiting';
+      gameBox.textContent = 'Wait for diff...';
+
+      const delay = 1000 + Math.random() * 2000;
+      timeoutId = setTimeout(() => {
+        gameState = 'ready';
+        gameBox.className = 'game-box ready';
+        const diff = badDiffs[diffIndex % badDiffs.length];
+        diffIndex++;
+        gameBox.innerHTML = diff;
+        startTime = performance.now();
+      }, delay);
+    }
+
+    approveBtn.addEventListener('click', () => {
+      if (gameState === 'waiting') {
+        clearTimeout(timeoutId);
+        gameBox.className = 'game-box too-early';
+        gameBox.textContent = 'Too early!';
+        cashEarned -= 0.01;
+        cashEarnedDisplay.textContent = '$' + cashEarned.toFixed(2);
+        gameResult.textContent = 'Patience is key... (-$0.01)';
+        gameResult.className = 'game-result failure';
+        gameState = 'idle';
+        setTimeout(startGame, 1000);
+      } else if (gameState === 'ready') {
+        const reactionTime = Math.round(performance.now() - startTime);
+
+        // 30% chance another reviewer beat you (after first PR)
+        if (prCount > 0 && Math.random() < 0.3) {
+          const firstNames = ['Sarah', 'Mike', 'Priya', 'James', 'Maria', 'Alex', 'Chen', 'Emma', 'Raj', 'Sofia', 'Tyler', 'Aisha', 'Kevin', 'Yuki', 'Omar', 'Jessica', 'David', 'Fatima', 'Brandon', 'Mei', 'Carlos', 'Hannah', 'Dmitri', 'Zara', 'Marcus', 'Ingrid', 'Kofi', 'Luna', 'Trevor', 'Ananya'];
+          const name = firstNames[Math.floor(Math.random() * firstNames.length)];
+          const lastInitial = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+          const beatBy = Math.floor(Math.random() * 20) + 5;
+          cashEarned -= 0.01;
+          cashEarnedDisplay.textContent = '$' + cashEarned.toFixed(2);
+          gameResult.textContent = `${name} ${lastInitial}. beat you by ${beatBy}ms (-$0.01)`;
+          gameResult.className = 'game-result failure';
+          gameState = 'idle';
+          setTimeout(startGame, 800);
+          return;
+        }
+
+        prCount++;
+        totalTime += reactionTime;
+        cashEarned += 0.01;
+        const avgTime = Math.round(totalTime / prCount);
+
+        prCountDisplay.textContent = prCount;
+        avgTimeDisplay.textContent = avgTime + 'ms';
+        cashEarnedDisplay.textContent = '$' + cashEarned.toFixed(2);
+
+        if (reactionTime < 250) {
+          gameResult.textContent = `${reactionTime}ms — Elite reviewer material!`;
+          gameResult.className = 'game-result success';
+        } else if (reactionTime < 400) {
+          gameResult.textContent = `${reactionTime}ms — Solid review speed!`;
+          gameResult.className = 'game-result success';
+        } else {
+          gameResult.textContent = `${reactionTime}ms — Good enough!`;
+          gameResult.className = 'game-result success';
+        }
+
+        gameState = 'idle';
+        setTimeout(startGame, 800);
+      }
+    });
+
+    rejectBtn.addEventListener('click', () => {
+      clearTimeout(timeoutId);
+      gameScreen.style.display = 'none';
+      rejectionScreen.classList.add('active');
+    });
+
+    tryAgainBtn.addEventListener('click', () => {
+      resetGame();
+      startGame();
+    });
+
+    // Instant tooltips for bottleneck segments
+    const tooltip = document.getElementById('bottleneck-tooltip');
+    const segments = document.querySelectorAll('.stacked-segment[data-tooltip]');
+
+    segments.forEach(segment => {
+      segment.addEventListener('mouseenter', (e) => {
+        tooltip.textContent = segment.dataset.tooltip;
+        tooltip.classList.add('visible');
+      });
+
+      segment.addEventListener('mousemove', (e) => {
+        tooltip.style.left = e.clientX + 12 + 'px';
+        tooltip.style.top = e.clientY + 12 + 'px';
+      });
+
+      segment.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+      });
+    });
+
+    // Cookie banner with dodging reject button
+    const cookieBanner = document.getElementById('cookie-banner');
+    const cookieAccept = document.getElementById('cookie-accept');
+    const cookieReject = document.getElementById('cookie-reject');
+    const cookieAcceptText = document.querySelector('.cookie-accept-text');
+    let dodgeCount = 0;
+    let cookieTimeout;
+
+    // Start the auto-accept timer
+    setTimeout(() => {
+      cookieAccept.classList.add('filling');
+      cookieTimeout = setTimeout(() => {
+        cookieAcceptText.textContent = 'Accepted';
+        setTimeout(() => {
+          cookieBanner.classList.add('hidden');
+        }, 500);
+      }, 10000);
+    }, 500);
+
+    cookieAccept.addEventListener('click', () => {
+      clearTimeout(cookieTimeout);
+      cookieBanner.classList.add('hidden');
+    });
+
+    cookieReject.addEventListener('mouseenter', () => {
+      dodgeCount++;
+      const directions = [
+        { x: 80, y: 0 },
+        { x: -80, y: 0 },
+        { x: 60, y: -20 },
+        { x: -60, y: -20 },
+        { x: 100, y: 10 },
+        { x: -100, y: 10 },
+      ];
+      const dir = directions[dodgeCount % directions.length];
+      cookieReject.style.transform = `translate(${dir.x}px, ${dir.y}px)`;
+
+      if (dodgeCount === 3) {
+        cookieReject.textContent = 'Stop it';
+      } else if (dodgeCount === 5) {
+        cookieReject.textContent = 'Please';
+      } else if (dodgeCount >= 7) {
+        cookieReject.textContent = 'Fine';
+        cookieReject.style.opacity = '0';
+        setTimeout(() => {
+          cookieReject.style.display = 'none';
+        }, 150);
+      }
+    });
+
+    cookieReject.addEventListener('click', () => {
+      // Just in case they somehow click it
+      cookieBanner.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
