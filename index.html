@@ -1141,16 +1141,37 @@
 
     @media (max-width: 480px) {
       .modal {
-        padding: 24px 16px;
+        padding: 20px 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+
+      .modal-subtitle {
+        margin-bottom: 16px;
+      }
+
+      .modal-pay {
+        padding: 12px;
+        margin-bottom: 16px;
+      }
+
+      .game-container {
+        margin: 16px 0;
       }
 
       .game-area {
         flex-direction: column;
+        margin-bottom: 12px;
       }
 
       .game-box {
         width: 100%;
-        min-height: 120px;
+        min-height: 100px;
       }
 
       .game-buttons {
@@ -1164,14 +1185,19 @@
 
       .game-stats {
         gap: 8px;
+        margin-top: 12px;
       }
 
       .game-score {
-        padding: 12px 8px;
+        padding: 10px 6px;
       }
 
       .game-score-value {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+      }
+
+      .game-score-label {
+        font-size: 0.7rem;
       }
     }
 
@@ -1524,7 +1550,11 @@
       }
 
       .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
       }
 
       .hero-ctas {
@@ -1879,7 +1909,7 @@
             </div>
           </div>
           <div class="game-result" id="game-result"></div>
-          <button class="btn btn-secondary" id="close-game-btn" style="margin-top: 16px;">Close</button>
+          <button class="btn btn-secondary" id="close-game-btn" style="margin-top: 8px;">Close</button>
         </div>
       </div>
 
